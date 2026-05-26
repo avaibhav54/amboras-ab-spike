@@ -63,6 +63,16 @@ export async function middleware(req: NextRequest) {
   res.headers.set('x-spike-bucket', bucket)
   res.headers.set('x-spike-new-visitor', isNew ? 'yes' : 'no')
   res.headers.set('x-spike-host', host)
+
+  // CRITICAL: don't let Vercel CDN cache this response. If we did, the
+  // first visitor's Set-Cookie + variant content would be served to every
+  // subsequent visitor — all of them would converge on the same bucket.
+  // Variant deployment's content is still cached at the variant edge, so
+  // we only lose the prod-deployment cache layer (acceptable for v0).
+  //
+  // Production optimization: shard the cache by variant (e.g. cache key
+  // includes the cookie value, or precompute pattern from Vercel Flags SDK).
+  res.headers.set('cache-control', 'private, no-store, max-age=0')
   return res
 }
 
