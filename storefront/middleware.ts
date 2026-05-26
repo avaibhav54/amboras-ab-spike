@@ -4,7 +4,7 @@
 
 import { NextResponse, type NextRequest } from 'next/server'
 
-const VARIANT_B_URL = 'https://amboras-ab-spike-p044thxf4-avaibhav54s-projects.vercel.app'
+const VARIANT_B_URL = 'https://amboras-ab-spike-nok1nohvb-avaibhav54s-projects.vercel.app'
 
 const COOKIE = 'amb_vid'
 const EXPERIMENT_ID = 'spike-001'
