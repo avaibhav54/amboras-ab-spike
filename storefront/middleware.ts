@@ -1,54 +1,70 @@
-// SPIKE: cross-deployment rewrite test
-// Rewrites ?bucket=B to the spike-variant-b preview deployment.
-// This is the load-bearing test for the entire branch-per-variant architecture.
-//
-// Test strategies (via ?strategy=N query param):
-//   strategy=1 (default): plain rewrite, no bypass header → expect 401
-//   strategy=2: rewrite with x-vercel-protection-bypass header
-//   strategy=3: rewrite via stable Vercel deployment alias (set up separately)
-//   strategy=4: relies on deployment protection being disabled in dashboard
-//
-// To capture latency we add a custom response header x-spike-latency-ms.
+// SPIKE middleware — cookie-based A/B bucketing
+// Real A/B testing: every request reads a sticky cookie, hashes it, picks a variant.
+// No ?bucket= query param — the cookie persists across all pages and return visits.
 
 import { NextResponse, type NextRequest } from 'next/server'
 
-// Variant-B preview deployment URL (the deployment we just pushed)
 const VARIANT_B_URL = 'https://amboras-ab-spike-p044thxf4-avaibhav54s-projects.vercel.app'
 
-// Optional bypass token — set via Vercel env var VERCEL_AUTOMATION_BYPASS_SECRET
-const BYPASS_TOKEN = process.env.VERCEL_AUTOMATION_BYPASS_SECRET ?? ''
+const COOKIE = 'amb_vid'
+const EXPERIMENT_ID = 'spike-001'
+
+// Deterministic hash → bucket. djb2 — small, fast, no deps. In production we'd
+// use MurmurHash3 (Optimizely/GrowthBook/Statsig standard) for better distribution.
+function hash(s: string): number {
+  let h = 5381
+  for (let i = 0; i < s.length; i++) h = (h * 33) ^ s.charCodeAt(i)
+  return h >>> 0
+}
+
+function pickBucket(vid: string): 'A' | 'B' {
+  return hash(`${vid}:${EXPERIMENT_ID}`) % 2 === 0 ? 'A' : 'B'
+}
 
 export async function middleware(req: NextRequest) {
-  const { searchParams, pathname } = req.nextUrl
-  const bucket = searchParams.get('bucket')
-  const strategy = searchParams.get('strategy') ?? '1'
-
-  // Pass through if not bucket=B
-  if (bucket !== 'B') {
+  // Skip Next internals + static assets
+  const { pathname } = req.nextUrl
+  if (pathname.startsWith('/_next') || pathname.startsWith('/api') ||
+      pathname === '/favicon.ico' || pathname === '/robots.txt') {
     return NextResponse.next()
   }
 
-  const start = Date.now()
-  const targetUrl = new URL(pathname + req.nextUrl.search, VARIANT_B_URL)
-
-  let rewriteOpts: { request?: { headers: Headers } } | undefined
-
-  if (strategy === '2' && BYPASS_TOKEN) {
-    // Strategy 2: pass bypass token in request headers (Vercel reads
-    // x-vercel-protection-bypass to skip SSO challenge).
-    const headers = new Headers(req.headers)
-    headers.set('x-vercel-protection-bypass', BYPASS_TOKEN)
-    headers.set('x-vercel-set-bypass-cookie', 'true')
-    rewriteOpts = { request: { headers } }
+  // Read or mint visitor ID
+  let vid = req.cookies.get(COOKIE)?.value
+  const isNew = !vid
+  if (!vid) {
+    vid = crypto.randomUUID()
   }
 
-  const res = NextResponse.rewrite(targetUrl, rewriteOpts)
-  res.headers.set('x-spike-strategy', strategy)
-  res.headers.set('x-spike-target', targetUrl.toString())
-  res.headers.set('x-spike-latency-ms', String(Date.now() - start))
+  const bucket = pickBucket(vid)
+
+  // Build response — either pass-through (variant A) or rewrite (variant B)
+  let res: NextResponse
+  if (bucket === 'B') {
+    const target = new URL(req.nextUrl.pathname + req.nextUrl.search, VARIANT_B_URL)
+    res = NextResponse.rewrite(target)
+  } else {
+    res = NextResponse.next()
+  }
+
+  // Always set cookie on first visit (host-only — no Domain attr = locked to this hostname)
+  if (isNew) {
+    res.cookies.set(COOKIE, vid, {
+      httpOnly: false,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30, // 30 days
+      path: '/',
+    })
+  }
+
+  // Diagnostic headers so you can curl -I and see what middleware decided
+  res.headers.set('x-spike-vid', vid)
+  res.headers.set('x-spike-bucket', bucket)
+  res.headers.set('x-spike-new-visitor', isNew ? 'yes' : 'no')
   return res
 }
 
 export const config = {
-  matcher: '/((?!_next|api|favicon|robots).*)',
+  matcher: '/((?!_next/static|_next/image|favicon|robots).*)',
 }
