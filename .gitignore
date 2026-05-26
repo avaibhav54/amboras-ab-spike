@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Environment
+.env
+.env.local
+.env*.local
+storefront/.env.local
+storefront/.env.local
+
+# Logs
+*.log
+
+# IDE
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*~
+
+# Misc
+coverage/
+tmp/
+*.tmp
+Thumbs.db

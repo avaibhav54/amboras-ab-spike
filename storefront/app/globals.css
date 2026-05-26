@@ -1,0 +1,175 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 40 20% 98%;
+    --foreground: 0 0% 10%;
+    --muted: 40 10% 94%;
+    --muted-foreground: 0 0% 45%;
+    --accent: 35 40% 50%;
+    --accent-foreground: 0 0% 100%;
+    --border: 40 10% 88%;
+    --ring: 35 40% 50%;
+    --primary: 0 0% 10%;
+    --primary-foreground: 0 0% 98%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+
+    /* Brand colors (dynamically injected from Store.metadata.brand) */
+    /* Access in CSS: var(--brand-primary), var(--brand-secondary) */
+    /* Managed by BrandStyleInjector component */
+  }
+
+  .dark {
+    --background: 0 0% 6%;
+    --foreground: 40 20% 94%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 35 45% 55%;
+    --accent-foreground: 0 0% 100%;
+    --border: 0 0% 16%;
+    --ring: 35 45% 55%;
+    --primary: 40 20% 94%;
+    --primary-foreground: 0 0% 6%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 98%;
+  }
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  body {
+    @apply bg-background text-foreground font-body antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Checkout — Shopify-style scoped theme
+ *
+ * /checkout/* should look like the Shopify checkout buyers already recognize
+ * (white background, neutral gray inputs, sans-only typography, dark CTA).
+ * The rest of the storefront keeps the boutique cream/serif brand. We scope
+ * the override via a wrapper class on app/checkout/layout.tsx — same CSS
+ * variables, different values inside the subtree, so all existing Tailwind
+ * utilities ("bg-background", "text-muted-foreground", etc.) automatically
+ * pick up the Shopify palette without any per-component rewrites.
+ * ------------------------------------------------------------------------- */
+.checkout-shopify-theme {
+  --background: 0 0% 100%;          /* pure white */
+  --foreground: 220 13% 13%;        /* near-black, slight cool tint */
+  --muted: 220 14% 96%;             /* very light cool gray */
+  --muted-foreground: 220 9% 46%;   /* mid gray for secondary text */
+  --border: 220 13% 88%;            /* light gray field border */
+  --ring: 222 100% 50%;             /* Shopify-ish focus blue */
+  --accent: 222 100% 50%;           /* link blue */
+  --accent-foreground: 0 0% 100%;
+  --primary: 220 13% 13%;
+  --primary-foreground: 0 0% 100%;
+}
+
+.checkout-shopify-theme h1,
+.checkout-shopify-theme h2,
+.checkout-shopify-theme h3,
+.checkout-shopify-theme h4,
+.checkout-shopify-theme h5,
+.checkout-shopify-theme h6 {
+  /* Shopify checkout uses the body sans for headings too — kill the serif
+     heading font that the rest of the storefront uses. */
+  font-family: var(--font-body);
+}
+
+/* Selection inside checkout matches the Shopify blue accent */
+.checkout-shopify-theme ::selection {
+  background-color: hsl(var(--accent) / 0.18);
+  color: hsl(var(--foreground));
+}
+
+@layer utilities {
+  .container-custom {
+    @apply mx-auto max-w-content px-4 sm:px-6 lg:px-8;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .link-underline {
+    @apply relative;
+  }
+  .link-underline::after {
+    content: '';
+    @apply absolute bottom-0 left-0 h-px w-0 bg-foreground transition-all duration-300;
+  }
+  .link-underline:hover::after {
+    @apply w-full;
+  }
+
+  /* Brand color utilities - uses colors from Store.metadata.brand */
+  .btn-brand-primary {
+    background-color: var(--brand-primary, hsl(var(--primary)));
+    color: white;
+  }
+  .btn-brand-primary:hover {
+    opacity: 0.9;
+  }
+
+  .text-brand-primary {
+    color: var(--brand-primary, hsl(var(--primary)));
+  }
+
+  .text-brand-secondary {
+    color: var(--brand-secondary, hsl(var(--accent)));
+  }
+
+  .border-brand-primary {
+    border-color: var(--brand-primary, hsl(var(--border)));
+  }
+
+  .bg-brand-primary {
+    background-color: var(--brand-primary, hsl(var(--primary)));
+  }
+
+  .bg-brand-secondary {
+    background-color: var(--brand-secondary, hsl(var(--accent)));
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  @apply bg-accent/20 text-foreground;
+}
+
+/* Focus styles */
+:focus-visible {
+  @apply outline-2 outline-offset-2 outline-ring;
+}
+
+/* Cookie consent animation */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}

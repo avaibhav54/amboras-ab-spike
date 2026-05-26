@@ -1,0 +1,69 @@
+'use client'
+
+import { useQuery } from '@tanstack/react-query'
+import { PLUGIN_REGISTRY } from '@/app/_generated/plugin-registry'
+import { ErrorBoundary } from '@/components/error-boundary'
+import type { SlotName, ComponentEntry, PluginConfigs } from '@/types/plugins'
+
+async function fetchPluginConfigs(): Promise<PluginConfigs> {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/integrations/active`,
+      {
+        headers: {
+          'x-publishable-api-key': process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ?? '',
+          'x-store-environment-id': process.env.NEXT_PUBLIC_STORE_ID ?? '',
+        },
+      }
+    )
+    if (!res.ok) return {}
+    return res.json()
+  } catch {
+    return {}
+  }
+}
+
+interface ClientPluginSlotProps {
+  name: Exclude<SlotName, 'head' | 'rootProviders'>
+  context?: Record<string, unknown>
+}
+
+/**
+ * Client-side slot renderer. Use from client component pages: homepage, cart,
+ * checkout, search, account, auth.
+ *
+ * Shares the ['plugin-configs'] TanStack Query cache key — multiple client slots
+ * on the same page deduplicate to a single fetch.
+ * Returns null immediately when no plugins are registered (no fetch fired).
+ */
+export function ClientPluginSlot({ name, context = {} }: ClientPluginSlotProps) {
+  const entries = PLUGIN_REGISTRY[name] as ComponentEntry[]
+
+  const { data: configs = {} } = useQuery({
+    queryKey: ['plugin-configs'],
+    queryFn: fetchPluginConfigs,
+    staleTime: 60_000,
+    enabled: entries?.length > 0,
+  })
+
+  if (!entries?.length) return null
+
+  return (
+    <>
+      {entries.map(({ id, Component, propsFromContext = [], propsFromConfig = {} }) => {
+        if (configs[id]?.enabled === false) return null
+
+        const ctxProps = Object.fromEntries(propsFromContext.map((k) => [k, context[k]]))
+        const cfgProps = Object.fromEntries(
+          Object.entries(propsFromConfig).map(([prop, key]) => [prop, configs[id]?.[key]])
+        )
+
+        return (
+          <ErrorBoundary key={id} fallback={null}>
+            <Component {...ctxProps} {...cfgProps} />
+          </ErrorBoundary>
+        )
+      })}
+    </>
+  )
+}

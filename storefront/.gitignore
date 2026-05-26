@@ -1,0 +1,38 @@
+# Dependencies
+node_modules
+/.pnp
+.pnp.js
+package-lock.json
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+# CI/verification build cache — produces multi-100MB webpack packs that
+# blow past GitHub's 100MB file limit and break `git push` on store repos.
+/.next-ci/
+/out/
+
+# Production
+/build
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+.env
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
