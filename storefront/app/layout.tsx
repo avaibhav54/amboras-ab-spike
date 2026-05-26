@@ -1,5 +1,6 @@
 // SPIKE layout — no Medusa providers, just a basic shell with cross-page nav
 import './globals.css'
+import Link from 'next/link'
 
 export const metadata = {
   title: 'Amboras A/B Spike',
@@ -18,13 +19,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           alignItems: 'center',
           background: 'white',
         }}>
-          <a href="/" style={{ fontSize: 18, fontWeight: 700, textDecoration: 'none', color: '#1a1a1a', letterSpacing: '0.15em' }}>
+          <Link href="/" style={{ fontSize: 18, fontWeight: 700, textDecoration: 'none', color: '#1a1a1a', letterSpacing: '0.15em' }}>
             AMBORAS
-          </a>
+          </Link>
           <nav style={{ display: 'flex', gap: 32 }}>
-            <a href="/" style={{ color: '#1a1a1a', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Home</a>
-            <a href="/products" style={{ color: '#1a1a1a', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Products</a>
-            <a href="/about" style={{ color: '#1a1a1a', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>About</a>
+            <Link href="/" style={{ color: '#1a1a1a', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Home</Link>
+            <Link href="/products" style={{ color: '#1a1a1a', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>Products</Link>
+            <Link href="/about" style={{ color: '#1a1a1a', textDecoration: 'none', fontSize: 14, fontWeight: 500 }}>About</Link>
           </nav>
         </header>
         {children}

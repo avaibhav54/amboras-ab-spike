@@ -1,4 +1,6 @@
 // SPIKE control page — variant A (the baseline)
+import Link from 'next/link'
+
 export default function HomePage() {
   return (
     <main>
@@ -17,12 +19,12 @@ export default function HomePage() {
         <p style={{ fontSize: 18, color: '#666', maxWidth: 540, margin: '0 auto 32px' }}>
           Thoughtfully designed products that bring beauty and function to your daily rituals.
         </p>
-        <a href="/products" style={{
+        <Link href="/products" style={{
           padding: '16px 36px', background: '#1a1a1a', color: 'white',
           textDecoration: 'none', fontSize: 13, fontWeight: 600, letterSpacing: '0.15em', textTransform: 'uppercase',
         }}>
           Shop Now →
-        </a>
+        </Link>
       </section>
       <section style={{ padding: '80px 40px', maxWidth: 800, margin: '0 auto', textAlign: 'center' }}>
         <h2 style={{ fontSize: 32, fontWeight: 500 }}>Our Philosophy</h2>
