@@ -1,64 +1,22 @@
-import { Metadata } from 'next'
-
-export const metadata: Metadata = { title: 'About Us' }
-
+// SPIKE VARIANT B about — founder narrative + stats angle
 export default function AboutPage() {
   return (
-    <>
-      <div className="border-b">
-        <div className="container-custom py-section-sm text-center">
-          <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-2">Our Story</p>
-          <h1 className="text-h1 font-heading font-semibold">About Us</h1>
-        </div>
+    <main style={{ padding: '80px 40px', maxWidth: 720, margin: '0 auto' }}>
+      <div style={{ background: '#ff0080', color: 'white', padding: '8px 16px', textAlign: 'center', fontWeight: 700, fontFamily: 'monospace', fontSize: 13, marginBottom: 40 }}>
+        🅱️ VARIANT B — about page
       </div>
-
-      <div className="container-custom py-section max-w-3xl">
-        <div className="prose prose-lg mx-auto space-y-8 text-muted-foreground leading-relaxed">
-          <p className="text-foreground text-xl font-heading leading-relaxed">
-            We started with a simple belief: everyday objects should be beautiful, functional,
-            and made to last. No compromises.
-          </p>
-
-          <p>
-            Founded in 2024, our store was born from a desire to curate products that bring
-            intention to daily life. We partner with artisans and small-batch manufacturers
-            who share our commitment to quality materials and thoughtful design.
-          </p>
-
-          <div className="grid sm:grid-cols-2 gap-8 py-8 border-y not-prose">
-            <div>
-              <p className="text-3xl font-heading font-semibold text-foreground">100%</p>
-              <p className="text-sm text-muted-foreground mt-1">Ethically sourced materials</p>
-            </div>
-            <div>
-              <p className="text-3xl font-heading font-semibold text-foreground">50+</p>
-              <p className="text-sm text-muted-foreground mt-1">Artisan partners worldwide</p>
-            </div>
-            <div>
-              <p className="text-3xl font-heading font-semibold text-foreground">30-Day</p>
-              <p className="text-sm text-muted-foreground mt-1">No-questions-asked returns</p>
-            </div>
-            <div>
-              <p className="text-3xl font-heading font-semibold text-foreground">Carbon</p>
-              <p className="text-sm text-muted-foreground mt-1">Neutral shipping on every order</p>
-            </div>
-          </div>
-
-          <h2 className="text-h3 font-heading font-semibold text-foreground">Our Philosophy</h2>
-          <p>
-            We believe in fewer, better things. Every product in our collection is chosen for
-            its craftsmanship, longevity, and the story behind it. We&apos;d rather offer one
-            exceptional version of something than ten mediocre options.
-          </p>
-
-          <h2 className="text-h3 font-heading font-semibold text-foreground">Sustainability</h2>
-          <p>
-            From packaging to shipping, we&apos;re committed to reducing our environmental
-            footprint. All orders ship in recycled and recyclable materials. We offset 100%
-            of carbon emissions from shipping through verified carbon removal projects.
-          </p>
-        </div>
+      <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.3em', color: '#ff0080', margin: 0 }}>Our Story</p>
+      <h1 style={{ fontSize: 56, fontWeight: 800, margin: '16px 0 32px', letterSpacing: '-0.03em', lineHeight: 1 }}>
+        Built by people who actually use the products
+      </h1>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, margin: '40px 0' }}>
+        <div><div style={{ fontSize: 36, fontWeight: 800, color: '#ff0080' }}>4,800+</div><div style={{ color: '#666', fontSize: 13 }}>Happy customers</div></div>
+        <div><div style={{ fontSize: 36, fontWeight: 800, color: '#ff0080' }}>4.9★</div><div style={{ color: '#666', fontSize: 13 }}>Average rating</div></div>
+        <div><div style={{ fontSize: 36, fontWeight: 800, color: '#ff0080' }}>24h</div><div style={{ color: '#666', fontSize: 13 }}>Ship time</div></div>
       </div>
-    </>
+      <p style={{ fontSize: 18, color: '#444', lineHeight: 1.7 }}>
+        Started in a garage in 2024. Now we ship to 47 countries. Every product is tested in our own homes first — if we wouldn&apos;t buy it, we don&apos;t sell it.
+      </p>
+    </main>
   )
 }

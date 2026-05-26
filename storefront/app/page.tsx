@@ -1,175 +1,42 @@
-'use client'
-
+// SPIKE VARIANT B page — bolder hero, urgency-focused copy, dark theme
 import Link from 'next/link'
-import Image from 'next/image'
-import { useState } from 'react'
-import { ArrowRight, Truck, Shield, RotateCcw } from 'lucide-react'
-import CollectionSection from '@/components/marketing/collection-section'
-import { useCollections } from '@/hooks/use-collections'
-import { HERO_PLACEHOLDER, LIFESTYLE_PLACEHOLDER } from '@/lib/utils/placeholder-images'
-import { ClientPluginSlot } from '@/components/ClientPluginSlot'
 
 export default function HomePage() {
-  const { data: collections, isLoading } = useCollections()
-  const [newsletterEmail, setNewsletterEmail] = useState('')
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!newsletterEmail.trim()) return
-  }
-
   return (
-    <>
-      {/* SPIKE BANNER — verifies which variant is being served */}
-      <div style={{ background: '#ff0080', color: 'white', padding: '8px 16px', textAlign: 'center', fontWeight: 'bold', fontFamily: 'monospace' }}>
-        🅱️ SPIKE VARIANT B — rewrite working
+    <main>
+      {/* Visible variant marker so user can confirm which one is rendering */}
+      <div style={{ background: '#ff0080', color: 'white', padding: '8px 16px', textAlign: 'center', fontWeight: 700, fontFamily: 'monospace', fontSize: 13 }}>
+        🅱️ VARIANT B — different hero, different products, different about
       </div>
-      {/* Hero Section */}
-      <section className="relative bg-muted/30 overflow-hidden">
-        <div className="container-custom grid lg:grid-cols-2 gap-8 items-center py-section lg:py-32">
-          {/* Text Content */}
-          <div className="space-y-6 animate-fade-in-up">
-            <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">
-              New Collection
-            </p>
-            <h1 className="text-display font-heading font-semibold text-balance">
-              Variant B — Skincare That Works
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-md leading-relaxed">
-              Thoughtfully designed products that bring beauty and function to your daily rituals.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link
-                href="/products"
-                className="btn-brand-primary inline-flex items-center gap-2 px-8 py-3.5 text-sm font-semibold uppercase tracking-wide transition-opacity"
-                prefetch={true}
-              >
-                Shop Now
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 border-brand-primary border px-8 py-3.5 text-sm font-semibold uppercase tracking-wide hover:bg-brand-primary hover:text-white transition-colors"
-                prefetch={true}
-              >
-                Our Story
-              </Link>
-            </div>
-          </div>
-
-          {/* Hero Image */}
-          <div className="relative aspect-[4/5] lg:aspect-[3/4] bg-muted rounded-sm overflow-hidden animate-fade-in">
-            <Image
-              src={HERO_PLACEHOLDER}
-              alt="Hero - New Collection"
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
-              priority
-            />
-          </div>
-        </div>
+      <section style={{
+        background: '#1a1a1a',
+        color: 'white',
+        padding: '140px 40px',
+        textAlign: 'center',
+        minHeight: '70vh',
+      }}>
+        <p style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '0.3em', color: '#ff0080', margin: 0 }}>
+          Limited Edition · Drops Friday
+        </p>
+        <h1 style={{ fontSize: 88, fontWeight: 800, margin: '24px 0', letterSpacing: '-0.04em', lineHeight: 0.95 }}>
+          Designed For The<br/>Way You Actually Live
+        </h1>
+        <p style={{ fontSize: 20, color: '#bbb', maxWidth: 580, margin: '0 auto 40px' }}>
+          Real products. Real warranty. Free shipping over $50. Loved by 4,800+ customers.
+        </p>
+        <Link href="/products" style={{
+          padding: '20px 44px', background: '#ff0080', color: 'white',
+          textDecoration: 'none', fontSize: 14, fontWeight: 700, letterSpacing: '0.15em', textTransform: 'uppercase',
+        }}>
+          Browse The Drop →
+        </Link>
       </section>
-
-      {/* homeHero slot — social proof, countdown timers */}
-      <ClientPluginSlot name="homeHero" />
-
-      {/* Collections */}
-      {isLoading ? (
-        <section className="py-section">
-          <div className="container-custom">
-            <div className="animate-pulse space-y-4 text-center">
-              <div className="h-3 w-20 bg-muted rounded mx-auto" />
-              <div className="h-8 w-64 bg-muted rounded mx-auto" />
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-              {[1, 2, 3].map((i) => (
-                <div key={i} className="aspect-[3/4] bg-muted rounded animate-pulse" />
-              ))}
-            </div>
-          </div>
-        </section>
-      ) : collections && collections.length > 0 ? (
-        <>
-          {collections.map((collection: { id: string; handle: string; title: string; metadata?: Record<string, unknown> }, index: number) => (
-            <CollectionSection
-              key={collection.id}
-              collection={collection}
-              alternate={index % 2 === 1}
-            />
-          ))}
-        </>
-      ) : null}
-
-      {/* homeBelowFeatured slot — recently viewed, newsletter plugins */}
-      <ClientPluginSlot name="homeBelowFeatured" />
-
-      {/* Editorial / Brand Story Section */}
-      <section className="py-section bg-muted/30">
-        <div className="container-custom">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-            <div className="aspect-[4/5] bg-muted rounded-sm overflow-hidden relative">
-              <Image
-                src={LIFESTYLE_PLACEHOLDER}
-                alt="Lifestyle - Our Philosophy"
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
-            <div className="space-y-6 lg:max-w-md">
-              <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">Our Philosophy</p>
-              <h2 className="text-h2 font-heading font-semibold">
-                Crafted With Intention
-              </h2>
-              <p className="text-muted-foreground leading-relaxed">
-                Every product in our collection is chosen for its quality, design, and the story behind it.
-                We believe in fewer, better things — pieces that last and bring joy to everyday moments.
-              </p>
-              <Link
-                href="/about"
-                className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide link-underline pb-0.5"
-                prefetch={true}
-              >
-                Learn More
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </div>
-          </div>
-        </div>
+      <section style={{ padding: '80px 40px', maxWidth: 800, margin: '0 auto', textAlign: 'center', background: '#fafafa' }}>
+        <h2 style={{ fontSize: 32, fontWeight: 700 }}>Why customers choose us</h2>
+        <p style={{ color: '#666', fontSize: 16, lineHeight: 1.7 }}>
+          ⚡ Ships in 24h · 🔄 60-day returns · ⭐ 4.9/5 from 2,300+ reviews
+        </p>
       </section>
-
-      {/* Trust / Features Bar */}
-      {/* <section className="py-section-sm border-y">
-        <div className="container-custom">
-          
-        </div>
-      </section> */}
-
-      {/* Newsletter */}
-      <section className="py-section">
-        <div className="container-custom max-w-xl text-center">
-          <h2 className="text-h2 font-heading font-semibold">Stay in Touch</h2>
-          <p className="mt-3 text-muted-foreground">
-            Be the first to know about new arrivals, exclusive offers, and more.
-          </p>
-          <form className="mt-8 flex gap-2" onSubmit={handleNewsletterSubmit}>
-            <input
-              type="email"
-              value={newsletterEmail}
-              onChange={(e) => setNewsletterEmail(e.target.value)}
-              placeholder="Enter your email"
-              className="flex-1 border-b border-foreground/30 bg-transparent px-1 py-3 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none transition-colors"
-            />
-            <button
-              type="submit"
-              className="bg-foreground text-background px-6 py-3 text-sm font-semibold uppercase tracking-wide hover:opacity-90 transition-opacity whitespace-nowrap"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
-      </section>
-    </>
+    </main>
   )
 }
