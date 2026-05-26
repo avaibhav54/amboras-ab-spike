@@ -20,6 +20,10 @@ export default function HomePage() {
 
   return (
     <>
+      {/* SPIKE BANNER — verifies which variant is being served */}
+      <div style={{ background: '#ff0080', color: 'white', padding: '8px 16px', textAlign: 'center', fontWeight: 'bold', fontFamily: 'monospace' }}>
+        🅱️ SPIKE VARIANT B — rewrite working
+      </div>
       {/* Hero Section */}
       <section className="relative bg-muted/30 overflow-hidden">
         <div className="container-custom grid lg:grid-cols-2 gap-8 items-center py-section lg:py-32">
@@ -29,7 +33,7 @@ export default function HomePage() {
               New Collection
             </p>
             <h1 className="text-display font-heading font-semibold text-balance">
-              Elevate Your Everyday
+              Variant B — Skincare That Works
             </h1>
             <p className="text-lg text-muted-foreground max-w-md leading-relaxed">
               Thoughtfully designed products that bring beauty and function to your daily rituals.
